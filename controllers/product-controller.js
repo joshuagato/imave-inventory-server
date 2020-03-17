@@ -18,10 +18,7 @@ exports.createProduct = async (req, res, next) => {
     res.json({ success: true, message: 'Product Creation Successful!' });
 
   } catch (error) {
-    if (!error.statusCode) {
-      error.statusCode = 500;
-    }
-
+    if (!error.statusCode) error.statusCode = 500;
     next(error);
   }
 };
@@ -29,7 +26,7 @@ exports.createProduct = async (req, res, next) => {
 exports.fetchAllProducts = async (req, res, next) => {
   try {
     const products = await Product.find();
-    
+
     res.json({ success: true, products: products });
 
   } catch (error) {

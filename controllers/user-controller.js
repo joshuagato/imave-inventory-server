@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user-model');
 const config = require('../utilities/database-configuration');
+const Product = require('../models/product-model');
 const saltRounds = 12;
 
 // Controller for User Registration
@@ -71,9 +72,7 @@ exports.adminRegistration = async (req, res, next) => {
     res.json({ success: true, message: 'Admin Registration Successful!' });
 
   } catch (error) {
-    if (!error.statusCode) {
-      error.statusCode = 500;
-    }
+    if (!error.statusCode) error.statusCode = 500;
 
     next(error);
   }
@@ -87,7 +86,7 @@ exports.login = async (req, res, next) => {
     if (!user) {
       const error = new Error('Please check your Username or Passsword.');
       error.statusCode = 401;
-      return next(error);
+      next(error);
 
     } else {
       const isEqual = await bcrypt.compare(req.body.password, user.password);
@@ -98,16 +97,16 @@ exports.login = async (req, res, next) => {
         return next(error);
 
       } else {
-        const token = jwt.sign({ user: user }, config.secret, { expiresIn: '1hr' });
+        req.userLoggedIn = true;
+        req.userId = user._id;
+
+        const token = jwt.sign({ user: user }, config.secret, { expiresIn: '1d' });
         res.json({ success: true, message: 'Successful.', user: user, token: token });
       }
     }
 
   } catch (error) {
-    if (!error.statusCode) {
-      error.statusCode = 500;
-    }
-
+    if (!error.statusCode) error.statusCode = 500;
     next(error);
   }
 };

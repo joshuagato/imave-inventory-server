@@ -9,10 +9,13 @@ const bodyParser = require('body-parser');
 const multer  = require('multer');
 const uuid4 = require('uuid/v4');
 
+const User = require('./models/user-model');
 const options = require('./utilities/mongo-connect-options');
 const config = require('./utilities/database-configuration');
 const userRoutes = require('./routes/user-routes');
 const productRoutes = require('./routes/product-routes');
+const cartRoutes = require('./routes/cart-routes');
+const checkJWT = require('./middlewares/check-jwt');
 
 app.get('/', (req, res) => {
   res.send('Hello World ' + process.env.DB_CONNECTION2 + ' ' + process.env.PORT);
@@ -68,6 +71,25 @@ app.use(multer({ storage: productPictureStorage, fileFilter: fileFilter }).singl
 // Initializing userRoutes
 app.use('/api', userRoutes);
 app.use('/api', productRoutes);
+app.use('/api', cartRoutes);
+
+app.use(checkJWT, (req, res, next) => {
+  if (!req.userId) {
+    req.userId = null;
+    req.userLoggedIn = true;
+
+    next();
+  }
+
+  User.findById(req.userId).then(user => {
+    if (!user) return next();
+
+    req.userLoggedIn = true;
+    req.user = user;
+    next();
+  })
+  .catch(error => next(new Error(error)));
+});
 
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
@@ -80,7 +102,8 @@ app.use((error, req, res, next) => {
 mongoose.connect(config.database, options, error => {
   if (error) console.log(error);
   else console.log('Connected to the database.');
-});
+})
+.catch(error => console.log(error));
 
 // Create the server and cause it to keep listening for changes
 app.listen(process.env.PORT || config.port, () => console.log(`Running on port: ${config.port}`));
