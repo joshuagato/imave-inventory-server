@@ -68,17 +68,16 @@ app.use('/assets/product_pictures', express.static(path.join(__dirname, 'assets'
 // app.use(multer({ storage: profilePictureStorage, fileFilter: fileFilter }).single('profile_picture'));
 app.use(multer({ storage: productPictureStorage, fileFilter: fileFilter }).single('product_picture'));
 
+
 // Initializing userRoutes
 app.use('/api', userRoutes);
-app.use('/api', productRoutes);
-app.use('/api', cartRoutes);
 
 app.use(checkJWT, (req, res, next) => {
   if (!req.userId) {
     req.userId = null;
-    req.userLoggedIn = true;
+    req.userLoggedIn = false;
 
-    next();
+    return next();
   }
 
   User.findById(req.userId).then(user => {
@@ -86,10 +85,15 @@ app.use(checkJWT, (req, res, next) => {
 
     req.userLoggedIn = true;
     req.user = user;
+
     next();
   })
   .catch(error => next(new Error(error)));
 });
+
+// Initializing routes for other functionalities
+app.use('/api', productRoutes);
+app.use('/api', cartRoutes);
 
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;

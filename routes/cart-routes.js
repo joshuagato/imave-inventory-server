@@ -6,8 +6,11 @@ const checkJWT = require('../middlewares/check-jwt');
 // AddToCart route
 router.post('/cart/add-item', checkJWT, cartController.addToCart);
 
-// Increment item quantity
-router.post('/cart/increase-quantity', cartController.increaseItemQuantity);
+// Increase item quantity
+router.post('/cart/increase-quantity', checkJWT, cartController.increaseItemQuantity);
+
+// Decrease item quantity
+router.post('/cart/decrease-quantity', checkJWT, cartController.decreaseItemQuantity);
 
 // RemoveFromCart routes
 router.post('/cart/remove-item', checkJWT, cartController.removeFromCart);

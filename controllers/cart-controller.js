@@ -66,7 +66,7 @@ exports.increaseItemQuantity = async (req, res, next) => {
 };
 
 // Controller for decreasing a shopping cart item's quantity
-exports.increaseItemQuantity = async (req, res, next) => {
+exports.decreaseItemQuantity = async (req, res, next) => {
   try {
     const product = await Product.findById(req.body.productId);
 
