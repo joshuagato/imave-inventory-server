@@ -147,3 +147,22 @@ exports.clearCart = async (req, res, next) => {
 
   res.json({ message: 'Successfully cleared the shopping cart.' });
 };
+
+// Controller for fetching the shopping cart
+exports.fetchCart = async (req, res, next) => {
+  try {
+    if (!req.user) {
+      const error = new Error('Please login to continue');
+      error.statusCode = 401;
+      return next(error);
+    }
+
+    const result = await req.user.fetchCart();
+
+    res.json({ success: true, cart: result });
+
+  } catch (error) {
+    if (!error.statusCode) error.statusCode = 500;
+    return next(error);
+  }
+};

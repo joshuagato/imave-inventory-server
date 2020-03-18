@@ -15,6 +15,8 @@ const userSchema = new Schema({
     items: [
       {
         productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
+        title: { type: String, required: true },
+        imageUrl: { type: String, required: true },
         quantity: { type: Number, required: true },
         unitPrice: { type: Number, required: true },
         subTotalPrice: { type: Number, required: true },
@@ -40,7 +42,8 @@ userSchema.methods.addToCart = function (product) {
     updatedCartItems[cartProductIndex].subTotalPrice = newPrice;
 
   } else {
-    updatedCartItems.push({ productId: product._id, quantity: newQuantity, unitPrice: newPrice, subTotalPrice: newPrice });
+    updatedCartItems.push({ productId: product._id, title: product.title, imageUrl: product.imageUrl,
+      quantity: newQuantity, unitPrice: newPrice, subTotalPrice: newPrice });
   }
 
   const updatedCart = { items: updatedCartItems };
@@ -117,5 +120,9 @@ userSchema.methods.clearCart = function () {
   this.cart = { items: [], grandTotalPrice: 0 };
   return this.save();
 };
+
+userSchema.methods.fetchCart = function () {
+  return this.cart;
+}
 
 module.exports = mongoose.model('User', userSchema);
