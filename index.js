@@ -69,8 +69,9 @@ app.use('/assets/product_pictures', express.static(path.join(__dirname, 'assets'
 app.use(multer({ storage: productPictureStorage, fileFilter: fileFilter }).single('product_picture'));
 
 
-// Initializing userRoutes
+// Initializing userRoutes and productRoutes
 app.use('/api', userRoutes);
+app.use('/api', productRoutes);
 
 app.use(checkJWT, (req, res, next) => {
   if (!req.userId) {
@@ -92,7 +93,6 @@ app.use(checkJWT, (req, res, next) => {
 });
 
 // Initializing routes for other functionalities
-app.use('/api', productRoutes);
 app.use('/api', cartRoutes);
 
 app.use((error, req, res, next) => {
