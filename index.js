@@ -16,7 +16,9 @@ const config = require('./utilities/database-configuration');
 const userRoutes = require('./routes/user-routes');
 const productRoutes = require('./routes/product-routes');
 const cartRoutes = require('./routes/cart-routes');
+const nonUserCartRoutes = require('./routes/nonusercart-routes');
 const paymentRoutes = require('./routes/payment-routes');
+
 const checkJWT = require('./middlewares/check-jwt');
 
 app.get('/', (req, res) => {
@@ -74,6 +76,7 @@ app.use(multer({ storage: productPictureStorage, fileFilter: fileFilter }).singl
 // Initializing userRoutes and productRoutes
 app.use('/api', userRoutes);
 app.use('/api', productRoutes);
+app.use('/api', nonUserCartRoutes);
 app.use('/stripe', paymentRoutes);
 
 app.use(checkJWT, (req, res, next) => {
@@ -88,7 +91,7 @@ app.use(checkJWT, (req, res, next) => {
     if (!user) return next();
 
     req.userLoggedIn = true;
-    req.user = user;
+    req.user = user;;
 
     next();
   })
@@ -97,6 +100,7 @@ app.use(checkJWT, (req, res, next) => {
 
 // Initializing routes for other functionalities
 app.use('/api', cartRoutes);
+// app.use('/api', nonUserCartRoutes);
 
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
