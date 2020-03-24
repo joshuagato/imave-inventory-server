@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const multer  = require('multer');
 const uuid4 = require('uuid/v4');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const User = require('./models/user-model');
 const options = require('./utilities/mongo-connect-options');
@@ -15,6 +16,7 @@ const config = require('./utilities/database-configuration');
 const userRoutes = require('./routes/user-routes');
 const productRoutes = require('./routes/product-routes');
 const cartRoutes = require('./routes/cart-routes');
+const paymentRoutes = require('./routes/payment-routes');
 const checkJWT = require('./middlewares/check-jwt');
 
 app.get('/', (req, res) => {
@@ -72,6 +74,7 @@ app.use(multer({ storage: productPictureStorage, fileFilter: fileFilter }).singl
 // Initializing userRoutes and productRoutes
 app.use('/api', userRoutes);
 app.use('/api', productRoutes);
+app.use('/stripe', paymentRoutes);
 
 app.use(checkJWT, (req, res, next) => {
   if (!req.userId) {

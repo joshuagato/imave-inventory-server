@@ -25,7 +25,7 @@ exports.addToCart = async (req, res, next) => {
       return next(error);
     }
 
-    res.json({ message: 'Successfully added product to cart.' });
+    res.json({ success: true, message: 'Successfully added product to cart.' });
 
   } catch (error) {
     if (!error.statusCode) error.statusCode = 500;
@@ -57,7 +57,7 @@ exports.increaseItemQuantity = async (req, res, next) => {
       return next(error);
     }
 
-    res.json({ message: 'Successfully increased item quantity.' });
+    res.json({ success: true, message: 'Successfully increased item quantity.' });
 
   } catch (error) {
     if (!error.statusCode) error.statusCode = 500;
@@ -89,7 +89,7 @@ exports.decreaseItemQuantity = async (req, res, next) => {
       return next(error);
     }
 
-    res.json({ message: 'Successfully decreased item quantity.' });
+    res.json({ success: true, message: 'Successfully decreased item quantity.' });
 
   } catch (error) {
     if (!error.statusCode) error.statusCode = 500;
@@ -121,7 +121,7 @@ exports.removeFromCart = async (req, res, next) => {
       return next(error);
     }
 
-    res.json({ message: 'Successfully removed product from cart.' });
+    res.json({ success: true, message: 'Successfully removed product from cart.' });
 
   } catch (error) {
     if (!error.statusCode) error.statusCode = 500;
@@ -145,7 +145,7 @@ exports.clearCart = async (req, res, next) => {
     return next(error);
   }
 
-  res.json({ message: 'Successfully cleared the shopping cart.' });
+  res.json({ success: true, message: 'Successfully cleared the shopping cart.' });
 };
 
 // Controller for fetching the shopping cart
