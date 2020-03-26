@@ -4,6 +4,7 @@ const path = require('path');
 const cors = require('cors');
 const express = require('express');
 const app = express();
+const morgan = require('morgan');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const multer  = require('multer');
@@ -24,12 +25,12 @@ const checkJWT = require('./middlewares/check-jwt');
 app.get('/', (req, res) => {
   res.send('Hello World ' + process.env.DB_CONNECTION2 + ' ' + process.env.PORT);
 });
-exports.test = async (req, res) => {
-  res.send('Hello World');
-};
 
 // Enabling CORS
 app.use(cors());
+
+// Enabling morgan to log requests to console
+app.use(morgan('dev'));
 
 // Initializing bodyParser
 app.use(bodyParser.urlencoded({ extended: false }));
